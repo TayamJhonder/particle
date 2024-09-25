@@ -10,32 +10,35 @@
             margin: 0;
             padding: 0;
             font-family: 'Arial', sans-serif;
-            background-color: #000000; /* Changed to black background */
-            overflow: hidden;
+            background-color: #000000; /* Black background */
+            overflow: auto; /* Added to allow scrolling */
         }
 
         /* Making it responsive for mobile, laptop, and desktop */
         html, body {
             height: 100%;
             width: 100%;
+            overflow: auto; /* Added to ensure scrolling */
         }
 
         .content {
-            position: relative;
-            z-index: 2;
+            position: relative; /* Changed to relative to stay within the viewport */
+            z-index: 2; /* Ensure content is above the particle canvas */
             text-align: center;
             color: white;
-            top: 20%;
-            transform: translateY(-20%);
             padding: 20px;
+            margin-top: 50px; /* Added margin to push content down from the top */
         }
 
         .content h1 {
-            font-size: 3em;
+            font-size: 4em; /* Larger heading for emphasis */
+            margin: 0.5em 0;
         }
 
         .content p {
             font-size: 1.5em;
+            line-height: 1.4;
+            margin: 0.2em 0;
         }
 
         /* Cool background animation */
@@ -48,7 +51,7 @@
             background: linear-gradient(120deg, #000000, #222222, #000000); /* Black-themed gradient */
             background-size: 300% 300%;
             animation: gradientAnimation 10s ease infinite;
-            z-index: 1;
+            z-index: 0; /* Behind everything */
         }
 
         @keyframes gradientAnimation {
@@ -64,7 +67,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 3;
+            z-index: 1; /* Behind the text, but above the background */
             pointer-events: none;
         }
     </style>
@@ -78,6 +81,10 @@
         <p>I am currently studying [Your Field of Study], and I have a passion for technology, creativity, and learning.</p>
         <p>In my study life, I focus on mastering both technical and soft skills to prepare myself for future challenges in the tech industry.</p>
         <p>On this website, you'll find my projects, thoughts, and ideas!</p>
+        <!-- Added more content to demonstrate scrolling -->
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque volutpat nulla nec ultricies vestibulum. Sed malesuada, justo et cursus tristique, sapien sapien pharetra nunc, sit amet suscipit risus est nec lorem. Nullam non libero a nisi malesuada rhoncus. Vestibulum vitae libero vel arcu ultricies tincidunt non nec odio. Nullam gravida nulla id lectus posuere, at fringilla nisl tincidunt. Donec euismod, lorem ut egestas aliquet, ex quam suscipit elit, a tempor metus ligula eu ante. Suspendisse potenti.</p>
+        <p>Praesent ac nunc non nisi bibendum pharetra sit amet ac arcu. Donec vel est tincidunt, eleifend magna et, convallis dolor. Morbi euismod condimentum lacus, vel posuere nisi eleifend sed. Mauris varius malesuada magna non facilisis. Nam vulputate urna ut velit scelerisque, a euismod magna aliquet. Aliquam erat volutpat. Vestibulum in diam sed leo cursus vehicula. Ut condimentum lacus ac pharetra ultrices.</p>
+        <!-- Add more paragraphs or content as needed to enable scrolling -->
     </div>
 
     <!-- Spider web particle canvas -->
@@ -154,7 +161,7 @@
             particlesArray = [];
             let numberOfParticles = (canvas.width * canvas.height) / 4000; // More particles
             for (let i = 0; i < numberOfParticles; i++) {
-                let size = Math.random() * 2 + 1;
+                let size = Math.random() * 8 + 4; // Increased particle size to between 4 and 12
                 let x = Math.random() * (canvas.width - size * 2) + size;
                 let y = Math.random() * (canvas.height - size * 2) + size;
                 let directionX = (Math.random() * 1.2) - 0.6;
