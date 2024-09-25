@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glitch Animation</title>
+    <link href="https://fonts.googleapis.com/css?family=Varela" rel="stylesheet" type="text/css">
+    <style>
+        body {
+            background: black;
+            font-family: 'Varela', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden; /* Prevents scrollbars */
+        }
+
+        .glitch {
+            color: white;
+            font-size: 100px;
+            position: relative;
+            width: 400px;
+            margin: 0 auto;
+            transition: color 0.5s ease, text-shadow 0.5s ease; /* Smooth transition */
+        }
+
+        @keyframes noise-anim {
+            0% { clip: rect(0, 9999px, 0, 0); }
+            10% { clip: rect(0, 9999px, 40px, 0); }
+            20% { clip: rect(0, 9999px, 20px, 0); }
+            30% { clip: rect(0, 9999px, 60px, 0); }
+            40% { clip: rect(0, 9999px, 30px, 0); }
+            50% { clip: rect(0, 9999px, 80px, 0); }
+            60% { clip: rect(0, 9999px, 50px, 0); }
+            70% { clip: rect(0, 9999px, 90px, 0); }
+            80% { clip: rect(0, 9999px, 40px, 0); }
+            90% { clip: rect(0, 9999px, 70px, 0); }
+            100% { clip: rect(0, 9999px, 20px, 0); }
+        }
+
+        .glitch:after {
+            content: attr(data-text);
+            position: absolute;
+            left: 2px;
+            text-shadow: -1px 0 red;
+            top: 0;
+            color: white;
+            background: black;
+            overflow: hidden;
+            clip: rect(0, 900px, 0, 0);
+            animation: noise-anim 0.5s infinite linear alternate-reverse;
+        }
+
+        @keyframes noise-anim-2 {
+            0% { clip: rect(0, 9999px, 0, 0); }
+            10% { clip: rect(0, 9999px, 50px, 0); }
+            20% { clip: rect(0, 9999px, 30px, 0); }
+            30% { clip: rect(0, 9999px, 70px, 0); }
+            40% { clip: rect(0, 9999px, 40px, 0); }
+            50% { clip: rect(0, 9999px, 80px, 0); }
+            60% { clip: rect(0, 9999px, 50px, 0); }
+            70% { clip: rect(0, 9999px, 90px, 0); }
+            80% { clip: rect(0, 9999px, 40px, 0); }
+            90% { clip: rect(0, 9999px, 60px, 0); }
+            100% { clip: rect(0, 9999px, 20px, 0); }
+        }
+
+        .glitch:before {
+            content: attr(data-text);
+            position: absolute;
+            left: -2px;
+            text-shadow: 1px 0 blue;
+            top: 0;
+            color: white;
+            background: black;
+            overflow: hidden;
+            clip: rect(0, 900px, 0, 0);
+            animation: noise-anim-2 0.5s infinite linear alternate-reverse;
+        }
+
+        @keyframes rainbow {
+            0% { color: #FF0000; } /* Red */
+            15% { color: #FF7F00; } /* Orange */
+            30% { color: #FFFF00; } /* Yellow */
+            45% { color: #00FF00; } /* Green */
+            60% { color: #0000FF; } /* Blue */
+            75% { color: #4B0082; } /* Indigo */
+            90% { color: #9400D3; } /* Violet */
+            100% { color: #FF0000; } /* Red again */
+        }
+
+        .glitch-proximity {
+            animation: rainbow 1s linear infinite; /* Apply rainbow animation */
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); /* Glowing effect */
+        }
+    </style>
+</head>
+<body>
+    <div class="glitch" data-text="GLITCH">GLITCH</div>
+
+    <script>
+        document.addEventListener('mousemove', function(event) {
+            const glitchElement = document.querySelector('.glitch');
+            const rect = glitchElement.getBoundingClientRect();
+            const x = event.clientX;
+            const y = event.clientY;
+            const elementCenterX = rect.left + rect.width / 2;
+            const elementCenterY = rect.top + rect.height / 2;
+            const distance = Math.sqrt(Math.pow(x - elementCenterX, 2) + Math.pow(y - elementCenterY, 2));
+            const proximityThreshold = 200; // Change the threshold as needed
+
+            if (distance < proximityThreshold) {
+                glitchElement.classList.add('glitch-proximity');
+            } else {
+                glitchElement.classList.remove('glitch-proximity');
+            }
+        });
+    </script>
+</body>
+</html>
