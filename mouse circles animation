@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Starry Magic Cursor</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000; /* Dark background */
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="starCanvas"></canvas>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('starCanvas');
+            const ctx = canvas.getContext('2d');
+
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
+            let stars = [];
+            
+            window.addEventListener('resize', function() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            });
+
+            class Star {
+                constructor(x, y, velocityX, velocityY) {
+                    this.x = x;
+                    this.y = y;
+                    this.finalSize = Math.random() * 2 + 1; // Increase minimum size
+                    this.size = this.finalSize * 2; // Starting size is twice the final size
+                    this.alpha = 1;
+                    this.velocityX = velocityX * 0.1; // Increased velocity for smoother movement
+                    this.velocityY = 1 + Math.random() + velocityY * 0.1;
+                    this.gravity = 0.02;
+                    this.drag = 0.97;
+                    this.turbulence = () => Math.random() * 0.5 - 0.25;
+                    this.timeElapsed = 0; // Time since the star was created
+                    this.color = this.randomColor(); // Generate initial random color
+                }
+                
+                randomColor() {
+                    // Generate a random color in RGB format
+                    const r = Math.floor(Math.random() * 256);
+                    const g = Math.floor(Math.random() * 256);
+                    const b = Math.floor(Math.random() * 256);
+                    return `rgba(${r}, ${g}, ${b}, ${this.alpha})`;
+                }
+            
+                draw() {
+                    // Set random color for star
+                    ctx.fillStyle = this.randomColor();
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            
+                update(deltaTime) {
+                    this.x += this.velocityX + this.turbulence();
+                    this.velocityX *= this.drag;
+                    this.y += this.velocityY;
+                    this.velocityY += this.gravity;
+                    this.alpha = Math.max(0, this.alpha - 0.01); // Slow down the fade-out for smoother effect
+            
+                    this.timeElapsed += deltaTime;
+                    if (this.timeElapsed < 2000) { // 2000 milliseconds = 2 seconds
+                        this.size = this.finalSize * 2 - (this.finalSize * this.timeElapsed / 2000);
+                    } else {
+                        this.size = this.finalSize;
+                    }
+                } 
+            }
+            
+            let lastMouseX = 0;
+            let lastMouseY = 0;
+            let mouseVelocityX = 0;
+            let mouseVelocityY = 0;
+            
+            function addStars(e) {
+                // Calculate mouse velocity
+                mouseVelocityX = e.clientX - lastMouseX;
+                mouseVelocityY = e.clientY - lastMouseY;
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+            
+                // Number of stars to create per mouse movement event
+                const numberOfStars = 10; // Increase the number for more density
+
+                for (let i = 0; i < numberOfStars; i++) {
+                    // Random offsets for mouse velocity and position
+                    let randomOffsetX = (Math.random() - 0.5) * 100; // Adjust the multiplier for more or less randomness
+                    let randomOffsetY = (Math.random() - 0.5) * 100;
+                    let randomSize = Math.random() * 2 + 1; // Random size for each star
+                    
+                    // Create new star with modified velocity and size
+                    stars.push(new Star(e.clientX, e.clientY, mouseVelocityX + randomOffsetX, mouseVelocityY + randomOffsetY));
+                }
+            }
+            
+            canvas.addEventListener('mousemove', addStars);
+            
+            let lastTime = 0;
+
+            function update(time = 0) {
+                const deltaTime = time - lastTime;
+                lastTime = time;
+
+                ctx.clearRect(0, 0, width, height);
+                stars.forEach(star => star.update(deltaTime));
+                stars.forEach(star => star.draw());
+                stars = stars.filter(star => star.alpha > 0 && star.y < height && star.x > 0 && star.x < width);
+                requestAnimationFrame(update);
+            }
+
+            update();
+        });
+    </script>
+</body>
+</html>
